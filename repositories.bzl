@@ -9,6 +9,7 @@ def grpc_java_repositories(
     omit_com_google_instrumentation_api=False,
     omit_com_google_protobuf=False,
     omit_com_google_protobuf_java=False,
+    omit_com_google_protobuf_javalite=False,
     omit_com_google_protobuf_nano_protobuf_javanano=False,
     omit_com_squareup_okhttp=False,
     omit_com_squareup_okio=False,
@@ -41,6 +42,8 @@ def grpc_java_repositories(
     com_google_protobuf()
   if not omit_com_google_protobuf_java:
     com_google_protobuf_java()
+  if not omit_com_google_protobuf_javalite:
+    com_google_protobuf_javalite()
   if not omit_com_google_protobuf_nano_protobuf_javanano:
     com_google_protobuf_nano_protobuf_javanano()
   if not omit_com_squareup_okhttp:
@@ -141,6 +144,16 @@ def com_google_protobuf_java():
       sha256 = "542703acadc3f690d998f4641e1b988f15ba57ebca05fdfb1cd9095bec007948",
       strip_prefix = "protobuf-3.4.0",
       urls = ["https://github.com/google/protobuf/archive/v3.4.0.zip"],
+  )
+
+def com_google_protobuf_javalite():
+  # java_lite_proto_library rules implicitly depend on @com_google_protobuf_javalite//:java_lite_toolchain,
+  # which is the Java proto runtime (base classes and common utilities).
+  native.http_archive(
+      name = "com_google_protobuf_javalite",
+      sha256 = "d8a2fed3708781196f92e1e7e7e713cf66804bd2944894401057214aff4f468e",
+      strip_prefix = "protobuf-5e8916e881c573c5d83980197a6f783c132d4276",
+      urls = ["https://github.com/google/protobuf/archive/5e8916e881c573c5d83980197a6f783c132d4276.zip"],
   )
 
 def com_google_protobuf_nano_protobuf_javanano():
@@ -244,6 +257,6 @@ def io_netty_tcnative_boringssl_static():
 def io_opencensus_api():
   native.maven_jar(
       name = "io_opencensus_opencensus_api",
-      artifact = "io.opencensus:opencensus-api:0.7.0",
-      sha1 = "bf69d604c0dfcf63356053828a90c3e332acd2b8",
+      artifact = "io.opencensus:opencensus-api:0.8.0",
+      sha1 = "f921cd399ff9a3084370969dca74ccea510ff91f",
   )
