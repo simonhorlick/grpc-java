@@ -1,0 +1,105 @@
+load("//:java_grpc_library.bzl", "java_grpc_library")
+
+proto_library(
+    name = "census_proto",
+    srcs = ["src/main/proto/google/instrumentation/census.proto"],
+)
+
+proto_library(
+    name = "monitoring_proto",
+    srcs = ["src/main/proto/grpc/instrumentation/v1alpha/monitoring.proto"],
+    deps = [
+            "@com_google_protobuf//:any_proto",
+            "@com_google_protobuf//:empty_proto",
+            ":census_proto",
+    ],
+)
+
+proto_library(
+    name = "channelz_proto",
+    srcs = ["src/main/proto/io/grpc/channelz.proto"],
+    deps = [
+            "@com_google_protobuf//:any_proto",
+            "@com_google_protobuf//:timestamp_proto",
+            "@com_google_protobuf//:duration_proto",
+            "@com_google_protobuf//:wrappers_proto",
+    ],
+)
+
+proto_library(
+    name = "health_proto",
+    srcs = ["src/main/proto/health.proto"],
+)
+
+proto_library(
+    name = "binarylog_proto",
+    srcs = ["src/main/proto/io/grpc/binarylog.proto"],
+)
+
+proto_library(
+    name = "reflection_proto",
+    srcs = ["src/main/proto/io/grpc/reflection/v1alpha/reflection.proto"],
+)
+
+java_proto_library(
+    name = "channelz_java_proto",
+    deps = [":channelz_proto"],
+)
+
+java_proto_library(
+    name = "health_java_proto",
+    deps = [":health_proto"],
+)
+
+java_proto_library(
+    name = "binarylog_java_proto",
+    deps = [":binarylog_proto"],
+)
+
+java_proto_library(
+    name = "reflection_java_proto",
+    deps = [":reflection_proto"],
+)
+
+java_grpc_library(
+    name = "channelz_java_grpc",
+    srcs = [":channelz_proto"],
+    deps = [":channelz_java_proto"],
+)
+
+java_grpc_library(
+    name = "reflection_java_grpc",
+    srcs = [":reflection_proto"],
+    deps = [":reflection_java_proto"],
+)
+
+java_grpc_library(
+    name = "health_java_grpc",
+    srcs = [":health_proto"],
+    deps = [":health_java_proto"],
+)
+
+java_library(
+    name = "services",
+    srcs = glob([
+        "src/main/java/**/*.java",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//core",
+        "//protobuf",
+        "//core:internal",
+        "//stub",
+        ":channelz_java_proto",
+        ":channelz_java_grpc",
+        ":health_java_proto",
+        ":binarylog_java_proto",
+        ":health_java_grpc",
+        ":reflection_java_grpc",
+        ":reflection_java_proto",
+        "@com_google_instrumentation_instrumentation_api//jar",
+        "@com_google_code_findbugs_jsr305//jar",
+        "@com_google_errorprone_error_prone_annotations//jar",
+        "@com_google_guava_guava//jar",
+    ],
+)
